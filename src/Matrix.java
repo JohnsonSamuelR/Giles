@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.io.*;
 
 public class Matrix{
    private Matrix(){}
@@ -170,5 +171,39 @@ public class Matrix{
          result += input[i];
       }
       return result;
+   }
+   
+   
+   public static void write(String path,float[][] data){
+      try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))) {
+         for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[i].length; j++) {
+               writer.write(data[i][j] + " ");
+            }
+            writer.newLine();
+         }
+      }catch (IOException e){
+         System.out.println("Could not write your 2d array to " + path);
+         e.printStackTrace();
+      }
+   }
+   public static void write(String path,float[] data){
+   
+   }
+   public static void write(String path,String[][] data){
+      try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))) {
+         for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[i].length; j++) {
+               writer.write(data[i][j] + " ");
+            }
+            writer.newLine();
+         }
+      }catch (IOException e){
+         System.out.println("Could not write your 2d array to " + path);
+         e.printStackTrace();
+      }
+   }
+   public static void write(String path,String[] data){
+   
    }
 }

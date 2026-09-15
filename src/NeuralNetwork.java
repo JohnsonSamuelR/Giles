@@ -11,9 +11,7 @@ public class NeuralNetwork{
 
    public NeuralNetwork(int[] layers){
       this.layers = layers;
-      
-      //pathB = "XOR/bias.giles";
-      
+            
       //first, try to retrieve previously calculated weights/biases
       
       this.weights = new float[this.layers.length-1][97][97];
@@ -77,6 +75,7 @@ public class NeuralNetwork{
       }
    }
    public int train(float[][][] data){//mass training, repeated until total error is within a certain limit
+      //index 0 is input, 1 is target
       float totalErr = 97;
       int iterations = 0;
       while(Math.abs(totalErr) > 1E-3){
