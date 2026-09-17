@@ -1,5 +1,7 @@
-import java.util.Random;
+import java.util.*;
 import java.io.*;
+import java.nio.file.Paths;
+import java.nio.file.Files;
 
 public class Matrix{
    private Matrix(){}
@@ -167,43 +169,141 @@ public class Matrix{
    }
    public static float sum(float[] input){
       float result = 0;
-      for(int i=0;i<input.length;i++){
-         result += input[i];
+      for(float num : input){
+         result += num;
       }
       return result;
    }
-   
-   
-   public static void write(String path,float[][] data){
-      try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))) {
-         for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data[i].length; j++) {
-               writer.write(data[i][j] + " ");
-            }
-            writer.newLine();
+   public static void write(String path,String[] data){//writing String vectors as bits with \n as a separator
+      try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) {
+         for(String word : data){
+            dos.writeChars(word);
+            dos.writeChar('\n');
          }
       }catch (IOException e){
-         System.out.println("Could not write your 2d array to " + path);
+         System.out.println("Could not write your Strings to " + path);
          e.printStackTrace();
       }
    }
-   public static void write(String path,float[] data){
-   
-   }
-   public static void write(String path,String[][] data){
-      try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))) {
-         for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data[i].length; j++) {
-               writer.write(data[i][j] + " ");
-            }
-            writer.newLine();
+   public static void write(String path,float[] data){//writing float vectors as bits
+      try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) {
+         dos.writeInt(data.length);//rows
+         for (float num : data) {
+            dos.writeFloat(num);//data points
          }
-      }catch (IOException e){
-         System.out.println("Could not write your 2d array to " + path);
+      } catch (IOException e) {
          e.printStackTrace();
       }
    }
-   public static void write(String path,String[] data){
-   
+   public static void write(String path,float[][] matrix){//writing float matrices as bits
+      try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) {
+         dos.writeInt(matrix.length);//rows
+         dos.writeInt(matrix[0].length);//collumns
+         for (float[] row : matrix) {
+            for(float num : row){
+               dos.writeFloat(num);
+            }
+         }
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+   }
+   public static void write(String path,float[][][] data){//writing 3d matrices as bits
+      try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) {
+         dos.writeInt(data.length);//layers
+         for(float[][] matrix : data){
+            dos.writeInt(matrix.length);//rows
+            dos.writeInt(matrix[0].length);//collumns
+            for(float[] vector : matrix){
+               for(float num : vector){
+                  dos.writeFloat(num);//data point
+               }
+            }
+         }
+      }catch (IOException e){
+         e.printStackTrace();
+      }
+   }
+   public static String[] readStrings(String path){
+      String[] result = null;
+      try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(path)))) {
+         //readInt() to get length
+         int length = dis.readInt();
+         result = new String[length];
+         //create array of that length
+         int dir = 0;
+         String tempString = "";
+         while(dir<result.length){
+            //read the next char
+            char c = dis.readChar();
+            if(c == '\n'){
+               //current directory = tempString
+               result[dir] = tempString;
+               tempString = "";
+               //move to next directory
+               dir++;
+            }else{
+               //add it to the temp string
+               tempString += c;
+            }
+         }
+      } catch (EOFException e) {
+         //End of file reached safely
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+      return result;
+   }
+   //reads the bits of a float vector from path
+   public static float[] readFloats(String path){
+      float[] result = null;
+      try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(path)))) {
+         result = new float[dis.readInt()];
+         for(int i=0;i<result.length;i++){
+            result[i] = dis.readFloat();
+         } 
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+      return result;
+   }
+   public static float[][] read2dFloats(String path){
+      float[][] matrix = null;
+      try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(path)))){
+         int rows = dis.readInt();
+         int collumns = dis.readInt();
+         matrix = new float[rows][collumns];
+         for(int i=0;i<matrix.length;i++){
+            for(int j=0;j<matrix[0].length;j++){
+               matrix[i][j] = dis.readFloat();
+            }
+         }
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+      return matrix;
+   }
+   public static float[][][] read3dFloats(String path){
+      float[][][] result = null;
+      try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(path)))){
+         int layers = dis.readInt();
+         result = new float[layers][][];
+         for(int i=0;i<layers;i++){
+            int rows = dis.readInt();
+            int collumns = dis.readInt();
+            result[i] = new float[rows][collumns];
+            for(int j=0;j<rows;j++){
+               for(int k=0;k<collumns;k++){
+                  result[i][j][k] = dis.readFloat();
+               }
+            }
+         }
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+      return result;
+   }
+   public static boolean exists(String path){
+      return Files.exists(Paths.get(path));
    }
 }

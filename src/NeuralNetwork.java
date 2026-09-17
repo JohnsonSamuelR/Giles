@@ -1,27 +1,39 @@
 import java.util.Random;
 
+//weights stored in dir/weights.giles
+//biases stored in dir/biases.giles
+
 public class NeuralNetwork{
    float lr = (float)0.1;//learning rate for training
    private int[] layers;//stores the number of nodes at each layer
    private float[][][] weights;//[layer][row][collumn]
    private float[][] bias;//[layer][row]
-   
-   private String pathB;
-   private String pathW;
+   private String dir;//object directory
 
-   public NeuralNetwork(int[] layers){
+   public NeuralNetwork(String dir,int[] layers){
       this.layers = layers;
-            
-      //first, try to retrieve previously calculated weights/biases
+      this.dir = dir;
       
-      this.weights = new float[this.layers.length-1][97][97];
-      for(int i=0;i<this.weights.length;i++){
-         this.weights[i] = Matrix.randomise(new float[this.layers[i+1]][this.layers[i]]);
+      String path = dir + "weights.giles";
+      if(Matrix.exists(path)){
+         this.weights = Matrix.read3dFloats(path);
+      }else{
+         //set it all as random
+         this.weights = new float[this.layers.length-1][97][97];
+         for(int i=0;i<this.weights.length;i++){
+            this.weights[i] = Matrix.randomise(new float[this.layers[i+1]][this.layers[i]]);
+         }
       }
-   
-      this.bias = new float[this.layers.length-1][97];
-      for(int i=0;i<this.bias.length;i++){
-         this.bias[i] = Matrix.randomise(new float[this.layers[i+1]]);
+         
+      path = dir + "biases.giles";
+      if(Matrix.exists(path)){
+         this.bias = Matrix.read2dFloats(path);
+      }else{
+         //set it all as random
+         this.bias = new float[this.layers.length-1][97];
+         for(int i=0;i<this.bias.length;i++){
+            this.bias[i] = Matrix.randomise(new float[this.layers[i+1]]);
+         }
       }
    }
    
@@ -73,11 +85,15 @@ public class NeuralNetwork{
       for(int i=0;i<this.weights.length;i++){
          this.weights[i] = Matrix.add(this.weights[i],deltaWeight[i]);
       }
+      //writing down new weights/biases
+      Matrix.write(dir + "weights.giles",this.weights);
+      
+      Matrix.write(dir + "biases.giles",this.bias);
    }
    public int train(float[][][] data){//mass training, repeated until total error is within a certain limit
       //index 0 is input, 1 is target
       float totalErr = 97;
-      int iterations = 0;
+      int iterations = 0;//everything pertaining to iterations can be removed, but is left in for fun
       while(Math.abs(totalErr) > 1E-3){
          iterations++;
          totalErr = 0;
@@ -91,8 +107,5 @@ public class NeuralNetwork{
    }
    private float[] math(float[] nodeErr,float[] outputs){//I just didn't want to write out that ugly line more than once
       return Matrix.eMultiply(Matrix.multiply(nodeErr,lr),Matrix.eMultiply(outputs,Matrix.subtract(1,outputs)));
-   }
-   public void record(){
-      //Writer.write(pathB,bias);
    }
 }

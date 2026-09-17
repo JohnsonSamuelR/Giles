@@ -48,12 +48,11 @@ public class OptimusPrime{
             //if we don't, add it the vocab
             addWord(input);
             //add whole sentence to training data
-            String path = this.dir + "data.giles";
             String data = "";
             for(String bit : sentence){
                data+=bit+" ";
             }
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.dir + "data.giles", true))) {
                writer.write(data);
                writer.newLine();
             } catch (IOException e) {
@@ -74,9 +73,8 @@ public class OptimusPrime{
    }
    public void train(){
       String[] data = new String[97];
-      String path = this.dir + "data.giles";
       //get the next line of training data from file
-      try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+      try (BufferedReader reader = new BufferedReader(new FileReader(this.dir + "data.giles"))) {
          ArrayList<String> tempData = new ArrayList<>();
          String line = reader.readLine();
          while(line != null){
@@ -86,7 +84,6 @@ public class OptimusPrime{
          reader.close();
          data = tempData.toArray(String[]::new);
       }catch (IOException e){
-         System.out.println("Retrieving training data from " + path + " failed.");
          e.printStackTrace();
       }
       for(int z=0;z<data.length;z++){
@@ -115,8 +112,7 @@ public class OptimusPrime{
          }
       }
       //records table
-      path = this.dir + "table.giles";
-      Matrix.write(path,this.table);
+      Matrix.write(this.dir + "table.giles",this.table);
    }
    private void addWord(String word){
       //adds word to the vocab
