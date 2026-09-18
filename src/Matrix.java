@@ -180,6 +180,7 @@ public class Matrix{
             dos.writeChars(word);
             dos.writeChar('\n');
          }
+         dos.close();
       }catch (IOException e){
          System.out.println("Could not write your Strings to " + path);
          e.printStackTrace();
@@ -191,6 +192,7 @@ public class Matrix{
          for (float num : data) {
             dos.writeFloat(num);//data points
          }
+         dos.close();
       } catch (IOException e) {
          e.printStackTrace();
       }
@@ -204,6 +206,7 @@ public class Matrix{
                dos.writeFloat(num);
             }
          }
+         dos.close();
       } catch (IOException e) {
          e.printStackTrace();
       }
@@ -220,6 +223,7 @@ public class Matrix{
                }
             }
          }
+         dos.close();
       }catch (IOException e){
          e.printStackTrace();
       }
@@ -247,6 +251,7 @@ public class Matrix{
                tempString += c;
             }
          }
+         dis.close();
       } catch (EOFException e) {
          //End of file reached safely
       } catch (IOException e) {
@@ -262,6 +267,7 @@ public class Matrix{
          for(int i=0;i<result.length;i++){
             result[i] = dis.readFloat();
          } 
+         dis.close();
       } catch (IOException e) {
          e.printStackTrace();
       }
@@ -278,6 +284,7 @@ public class Matrix{
                matrix[i][j] = dis.readFloat();
             }
          }
+         dis.close();
       } catch (IOException e) {
          e.printStackTrace();
       }
@@ -298,6 +305,7 @@ public class Matrix{
                }
             }
          }
+         dis.close();
       } catch (IOException e) {
          e.printStackTrace();
       }

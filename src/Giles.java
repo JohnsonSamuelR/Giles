@@ -2,6 +2,7 @@ public class Giles{
    public static void main(String args[]){      
       Console UI = new Console("Giles, Text Input");
       IntentBasedClassifier ICBM = new IntentBasedClassifier(".data/ICBM/");
+      System.out.println("ICBM ready....");
       //add check to see time of day. E.g. morning, afternoon, evening
       String input;
       UI.prompt("Good morning, sir. How may I be of assistance?");//opening prompt

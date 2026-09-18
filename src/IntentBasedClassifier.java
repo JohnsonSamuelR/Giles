@@ -43,7 +43,9 @@ public class IntentBasedClassifier{
    }
    private void update(){
       //train tokenizer
+      System.out.println("update() method started....");
       tokenizer.train();
+      System.out.println("tokenizer is trained....");
       //train the nn
       float[][][] data = new float[Intents.values().length][2][97];
       data[0][0] = tokenizer.embed("chat")[0];
@@ -62,7 +64,9 @@ public class IntentBasedClassifier{
       data[6][1] = intents[6];
       data[7][0] = tokenizer.embed("open")[0];
       data[7][1] = intents[7];
+      System.out.println("training data created....");
       System.out.println(nn.train(data));
+      System.out.println("neural net is trained....");
    }
 }
 enum Intents{
